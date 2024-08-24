@@ -7,6 +7,7 @@ public class Movement : MonoBehaviour
     private SpriteRenderer spriteRenderer;
     private Vector3 direction;
     private int spriteIndex = 0;
+    [SerializeField] private GameManager gameManager;
     [SerializeField] private Sprite[] sprites;
     [SerializeField] private float gravity = -9.8f;
     [SerializeField] private float strength = 5f;
@@ -19,6 +20,14 @@ public class Movement : MonoBehaviour
     private void Start()
     {
         InvokeRepeating(nameof(StartAnimation), 0.15f, 0.15f);
+    }
+
+    private void OnEnable()
+    {
+        Vector3 position = transform.position;
+        position.y = 0f;
+        transform.position = position;
+        direction = Vector3.zero;
     }
     private void Update()
     {
@@ -51,5 +60,17 @@ public class Movement : MonoBehaviour
         }
 
         spriteRenderer.sprite = sprites[spriteIndex];
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if(collision.gameObject.tag == "Pipes")
+        {
+            gameManager.GameOver();
+        }
+        else if(collision.gameObject.tag == "Scoring")
+        {
+            gameManager.IncreaseScore();
+        }
     }
 }
